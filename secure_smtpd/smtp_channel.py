@@ -20,7 +20,8 @@ def encode_b64(data):
     '''Wrapper for b64encode, without having to struggle with bytestrings.'''
     byte_string = data.encode('utf-8')
     encoded = base64.b64encode(byte_string)
-    return encoded.decode('utf-8')
+    return encoded
+#    return encoded.decode('utf-8')
 
 
 class SMTPChannel(smtpd.SMTPChannel):
@@ -71,13 +72,13 @@ class SMTPChannel(smtpd.SMTPChannel):
             # handled.
             if len(split_args) == 2:
                 self.username = decode_b64(arg.split(' ')[1])
-                self.push('334 ' + encode_b64('Username'))
+                self.push('334 ' + encode_b64('Username:'))
             else:
-                self.push('334 ' + encode_b64('Username'))
+                self.push('334 ' + encode_b64('Username:'))
 
         elif not self.username:
             self.username = decode_b64(arg)
-            self.push('334 ' + encode_b64('Password'))
+            self.push('334 ' + encode_b64('Password:'))
         else:
             self.authenticating = False
             self.password = decode_b64(arg)
